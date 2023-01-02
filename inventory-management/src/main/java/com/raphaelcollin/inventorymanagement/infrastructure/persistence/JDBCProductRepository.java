@@ -69,7 +69,7 @@ public class JDBCProductRepository implements WriteOnlyProductRepository, ReadOn
             }
 
             return Optional.ofNullable(product);
-        });
+        }, id);
     }
 
     @Override

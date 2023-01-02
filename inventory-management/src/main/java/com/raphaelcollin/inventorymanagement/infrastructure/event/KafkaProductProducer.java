@@ -11,11 +11,11 @@ import org.springframework.stereotype.Component;
 import java.util.stream.Collectors;
 
 @Component
-public class KafkaProductEventStream implements WriteOnlyProductStream {
+public class KafkaProductProducer implements WriteOnlyProductStream {
     private final KafkaTemplate<String, Product> kafkaTemplate;
     private final String productsTopic;
 
-    public KafkaProductEventStream(KafkaTemplate<String, Product> kafkaTemplate, @Value("${kafka.products-topic}") String productsTopic) {
+    public KafkaProductProducer(KafkaTemplate<String, Product> kafkaTemplate, @Value("${kafka.products-topic}") String productsTopic) {
         this.kafkaTemplate = kafkaTemplate;
         this.productsTopic = productsTopic;
     }

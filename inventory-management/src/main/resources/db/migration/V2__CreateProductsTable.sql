@@ -3,7 +3,7 @@ CREATE TABLE products (
     name VARCHAR(200) NOT NULL,
     description TEXT,
     additional_info TEXT,
-    price MONEY
+    price NUMERIC
 );
 
 CREATE TABLE inventory_products(

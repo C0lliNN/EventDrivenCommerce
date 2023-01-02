@@ -1,13 +1,15 @@
 package com.raphaelcollin.inventorymanagement.application.synchronizer;
 
 import com.raphaelcollin.inventorymanagement.domain.event.ProductEvent;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
-import java.util.List;
-
+@Service
+@AllArgsConstructor
 public class InventorySynchronizerService {
-    private WriteOnlyProductRepository productRepository;
+    private final WriteOnlyProductRepository productRepository;
 
-    void handleNewProductEvents(List<ProductEvent> products) {
-        
+    public void handleNewProductEvent(ProductEvent product) {
+        productRepository.upsertProduct(product.toEntity());
     }
 }
