@@ -15,6 +15,8 @@ public class ProductEvent {
     String description;
     String additionalInfo;
     double price;
+    int totalAmountAvailable;
+    boolean isAvailable;
     Set<InventoryProductEvent> inventoryProducts;
 
     public Product toEntity() {
@@ -43,6 +45,8 @@ public class ProductEvent {
                 product.getDescription(),
                 product.getAdditionalInfo(),
                 product.getPrice(),
+                product.getTotalAmountAvailable(),
+                product.isAvailable(),
                 inventories
         );
     }

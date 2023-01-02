@@ -14,6 +14,8 @@ public class ProductResponse {
     String description;
     String additionalInfo;
     double price;
+    int totalAmountAvailable;
+    boolean isAvailable;
     Set<InventoryProductResponse> inventoryProducts;
 
     public static ProductResponse fromDomain(Product product) {
@@ -30,6 +32,8 @@ public class ProductResponse {
                 product.getDescription(),
                 product.getAdditionalInfo(),
                 product.getPrice(),
+                product.getTotalAmountAvailable(),
+                product.isAvailable(),
                 inventories
         );
     }
