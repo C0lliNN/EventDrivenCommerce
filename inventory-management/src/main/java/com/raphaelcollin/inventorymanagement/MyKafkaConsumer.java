@@ -1,7 +1,7 @@
 package com.raphaelcollin.inventorymanagement;
 
-import org.springframework.stereotype.Component;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.stereotype.Component;
 
 @Component
 public class MyKafkaConsumer {
