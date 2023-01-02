@@ -1,0 +1,4 @@
+CREATE TABLE inventories (
+    id VARCHAR(36) NOT NULL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
+);

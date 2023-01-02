@@ -17,7 +17,17 @@ public class Product implements Item {
     private Set<InventoryProduct> inventoryProducts;
 
     public Set<InventoryProduct> getInventoryProducts() {
+        if (inventoryProducts == null) {
+            return new HashSet<>();
+        }
         return new HashSet<>(inventoryProducts);
+    }
+
+    public void addInventoryProduct(InventoryProduct inventoryProduct) {
+        if (inventoryProducts == null) {
+            inventoryProducts = new HashSet<>();
+        }
+        inventoryProducts.add(inventoryProduct);
     }
 
     @Override

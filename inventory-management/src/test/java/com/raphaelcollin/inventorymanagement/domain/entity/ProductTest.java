@@ -1,6 +1,5 @@
 package com.raphaelcollin.inventorymanagement.domain.entity;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -16,8 +15,16 @@ class ProductTest {
     class GetInventoryProductsTest {
 
         @Test
-        @DisplayName("when called, it should return a new Set instance with the same items")
-        void whenCalled_shouldReturnNewSetInstanceWithTheSameItems() {
+        @DisplayName("when inventoryProducts is null, then it should return an empty set")
+        void whenInventoryProductsIsNull_shouldReturnAnEmptySet() {
+            Product product = Product.builder().build();
+
+            assertThat(product.getInventoryProducts()).isEmpty();
+        }
+
+        @Test
+        @DisplayName("when inventoryProducts is not null, it should return a new Set instance with the same items")
+        void whenInventoryProductsIsNotNull_shouldReturnNewSetInstanceWithTheSameItems() {
             InventoryProduct inventoryProduct1 = new InventoryProduct("inventory-id1", "product-id-1", 4);
             InventoryProduct inventoryProduct2 = new InventoryProduct("inventory-id2", "product-id-2", 5);
 
@@ -27,7 +34,7 @@ class ProductTest {
 
             assertThat(product.getInventoryProducts())
                     .isNotSameAs(inventoryProducts)
-                    .containsExactlyElementsOf(inventoryProducts);
+                    .containsExactlyInAnyOrderElementsOf(inventoryProducts);
         }
     }
 
@@ -98,6 +105,35 @@ class ProductTest {
                     .build();
 
             assertThat(product.isAvailable()).isTrue();
+        }
+    }
+
+    @Nested
+    @DisplayName("method: addInventoryProduct")
+    class AddInventoryProductTEst {
+
+        @Test
+        @DisplayName("when inventoryProducts is null, a single item should be present at the inventoryProducts set")
+        void whenInventoryProductsIsNull_singleItemShouldBePresentAtTheInventoryProductsSet() {
+            InventoryProduct inventoryProduct = new InventoryProduct("", "", 4);
+            Product product = Product.builder().build();
+
+            product.addInventoryProduct(inventoryProduct);
+
+            assertThat(product.getInventoryProducts()).containsExactly(inventoryProduct);
+        }
+
+        @Test
+        @DisplayName("when inventoryProducts is not null, a new item should be added to the inventoryProducts set")
+        void whenInventoryProductsIsNotNull_newItemShouldBeAddedToTheInventoryProductsSet() {
+            InventoryProduct inventoryProduct1 = new InventoryProduct("", "", 4);
+            InventoryProduct inventoryProduct2 = new InventoryProduct("", "", 5);
+            Product product = Product.builder().build();
+
+            product.addInventoryProduct(inventoryProduct1);
+            product.addInventoryProduct(inventoryProduct2);
+
+            assertThat(product.getInventoryProducts()).hasSize(2).containsExactlyInAnyOrder(inventoryProduct1, inventoryProduct2);
         }
     }
 }
