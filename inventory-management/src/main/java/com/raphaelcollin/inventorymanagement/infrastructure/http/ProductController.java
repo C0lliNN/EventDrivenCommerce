@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @AllArgsConstructor
@@ -29,8 +29,8 @@ public class ProductController {
     }
 
     @PostMapping("/products")
-    public void upsertProduct(@RequestBody UpsertProductRequest request) {
-
-        service.upsertProduct(request.withCorrelationId(UUID.randomUUID().toString()));
+    public void upsertProduct(@RequestBody UpsertProductRequest request, HttpServletRequest httpServletRequest) {
+        String correlationId = (String) httpServletRequest.getAttribute(CorrelationIdInterceptor.CORRELATION_ID_NAME);
+        service.upsertProduct(request.withCorrelationId(correlationId));
     }
 }

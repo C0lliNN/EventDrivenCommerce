@@ -8,6 +8,7 @@ import com.raphaelcollin.inventorymanagement.domain.event.ProductEvent;
 import com.raphaelcollin.inventorymanagement.domain.exception.EntityNotFoundException;
 import com.raphaelcollin.inventorymanagement.domain.exception.InvalidRequestException;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @AllArgsConstructor
 public class InventoryManagementService {
     private final WriteOnlyProductStream productStream;
@@ -38,6 +40,8 @@ public class InventoryManagementService {
 
         ProductEvent event = ProductEvent.fromEntity(request.toDomain(), request.getCorrelationId());
         productStream.publishEvent(event);
+
+        log.info("Product event published for ID: {}", event.getId());
     }
 
     private void validateProductRequest(UpsertProductRequest request) {
