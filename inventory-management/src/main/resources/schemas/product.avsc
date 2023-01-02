@@ -1,0 +1,63 @@
+[
+  {
+    "type": "record",
+    "namespace": "com.raphaelcollin.inventorymanagement.kafka",
+    "name": "InventoryProduct",
+    "fields": [
+      {
+        "name": "inventoryId",
+        "type": "string"
+      },
+      {
+        "name": "quantity",
+        "type": "int"
+      }
+    ]
+  },
+  {
+    "type": "record",
+    "namespace": "com.raphaelcollin.inventorymanagement.kafka",
+    "name": "Product",
+    "fields": [
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "correlationId",
+        "type": "string"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": ["null", "string"]
+      },
+      {
+        "name": "additionalInfo",
+        "type": ["null", "string"]
+      },
+      {
+        "name": "price",
+        "type": "float"
+      },
+      {
+        "name": "totalAmountAvailable",
+        "type": "int"
+      },
+      {
+        "name": "isAvailable",
+        "type": "boolean"
+      },
+      {
+        "name": "inventoryProducts",
+        "type": {
+          "type": "array",
+          "items": "InventoryProduct"
+        }
+      }
+    ]
+  }
+]
