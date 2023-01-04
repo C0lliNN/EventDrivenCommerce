@@ -30,14 +30,14 @@ class OrderTest {
         }
 
         @Test
-        @DisplayName("when items is not empty, then it should return the sum of the items price")
-        void whenItemsIsNotEmpty_shouldReturnTheSumOfTheItemsPrice() {
-            Item item1 = Item.builder().price(25.0).build();
-            Item item2 = Item.builder().price(45.5).build();
+        @DisplayName("when items is not empty, then it should return the sum of the items totalPrice")
+        void whenItemsIsNotEmpty_shouldReturnTheSumOfTheItemsTotalPrice() {
+            Item item1 = Item.builder().price(25.0).quantity(2).build();
+            Item item2 = Item.builder().price(45.5).quantity(1).build();
 
             Order order = Order.builder().items(Set.of(item1, item2)).build();
 
-            assertThat(order.getTotal()).isEqualTo(70.5);
+            assertThat(order.getTotal()).isEqualTo(95.5);
         }
     }
 

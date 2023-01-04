@@ -16,7 +16,7 @@ public class Delivery {
         CANCELLED
     }
 
-    boolean isDelivered() {
+    public boolean isDelivered() {
         return deliveryStatus == DeliveryStatus.DELIVERED;
     }
 }

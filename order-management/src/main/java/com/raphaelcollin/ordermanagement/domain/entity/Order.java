@@ -18,7 +18,7 @@ public class Order {
 
     public double getTotal() {
         return getItems().stream()
-                .map(Item::getPrice)
+                .map(Item::getTotalPrice)
                 .reduce(0.0, Double::sum);
     }
 

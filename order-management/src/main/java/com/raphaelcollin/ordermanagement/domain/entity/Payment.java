@@ -16,7 +16,7 @@ public class Payment {
         CANCELLED
     }
 
-    boolean isPaid() {
+    public boolean isPaid() {
         return paymentStatus == PaymentStatus.PAID;
     }
 }

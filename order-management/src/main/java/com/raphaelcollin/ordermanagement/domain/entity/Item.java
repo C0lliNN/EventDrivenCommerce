@@ -8,6 +8,15 @@ import lombok.Data;
 public class Item {
     String id;
     String name;
+    int quantity;
     double price;
     boolean available;
+
+    public boolean isQuantityAvailable(int quantity) {
+        return this.quantity >= quantity;
+    }
+
+    public double getTotalPrice() {
+        return quantity * price;
+    }
 }
