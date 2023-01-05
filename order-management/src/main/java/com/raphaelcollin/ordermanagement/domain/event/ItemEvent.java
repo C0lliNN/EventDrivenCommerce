@@ -8,6 +8,7 @@ public class ItemEvent {
     String id;
     String name;
     int quantity;
+    boolean available;
     double price;
     double totalPrice;
 
@@ -20,8 +21,19 @@ public class ItemEvent {
                 item.getId(),
                 item.getName(),
                 item.getQuantity(),
+                item.isAvailable(),
                 item.getPrice(),
                 item.getTotalPrice()
         );
+    }
+
+    public Item toEntity() {
+        return Item.builder()
+                .id(id)
+                .name(name)
+                .quantity(quantity)
+                .price(price)
+                .available(available)
+                .build();
     }
 }

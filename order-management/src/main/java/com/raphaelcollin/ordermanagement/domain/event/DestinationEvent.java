@@ -21,4 +21,8 @@ public class DestinationEvent {
                 destination.getInstructions()
         );
     }
+
+    public Destination toEntity() {
+        return new Destination(address, latitude, longitude, instructions);
+    }
 }

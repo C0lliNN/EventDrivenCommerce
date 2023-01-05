@@ -31,4 +31,15 @@ public class OrderEvent {
                 order.getItems().stream().map(ItemEvent::fromEntity).collect(Collectors.toUnmodifiableSet())
         );
     }
+
+    public Order toEntity() {
+        return Order.builder()
+                .id(id)
+                .customer(customer.toEntity())
+                .destination(destination.toEntity())
+                .delivery(delivery.toEntity())
+                .payment(payment.toEntity())
+                .items(items.stream().map(ItemEvent::toEntity).collect(Collectors.toSet()))
+                .build();
+    }
 }

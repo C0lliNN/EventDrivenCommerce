@@ -17,4 +17,8 @@ public class DeliveryEvent {
         }
         return new DeliveryEvent(delivery.getDeliveryStatus(), delivery.getLastUpdated(), delivery.isDelivered());
     }
+
+    public Delivery toEntity() {
+        return new Delivery(deliveryStatus, lastUpdated);
+    }
 }

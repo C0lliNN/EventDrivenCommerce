@@ -24,4 +24,8 @@ public class PaymentEvent {
                 payment.isPaid()
         );
     }
+
+    public Payment toEntity() {
+        return new Payment(paymentMethod, paymentStatus, lastUpdated);
+    }
 }

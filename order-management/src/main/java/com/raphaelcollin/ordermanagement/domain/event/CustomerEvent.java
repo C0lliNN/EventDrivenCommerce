@@ -15,4 +15,8 @@ public class CustomerEvent {
         }
         return new CustomerEvent(customer.getName(), customer.getEmail(), customer.getPhone());
     }
+
+    public Customer toEntity() {
+        return new Customer(name, email, phone);
+    }
 }
