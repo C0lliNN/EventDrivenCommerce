@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class OrderService {
-    private final OrderEventStream orderEventStream;
+    private final OrderEventProducer orderEventProducer;
     private final ReadOnlyItemRepository itemRepository;
     private final ReadOnlyOrderRepository orderRepository;
     private final OrderValidatorService orderValidatorService;
@@ -30,7 +30,7 @@ public class OrderService {
         Set<Item> fullItems = itemRepository.findByIds(itemIds);
         order.setItems(fullItems);
 
-        orderEventStream.publishEvent(OrderEvent.fromEntity(order));
+        orderEventProducer.publishEvent(OrderEvent.fromEntity(order));
     }
 
     public List<OrderResponse> getAllOrders() {

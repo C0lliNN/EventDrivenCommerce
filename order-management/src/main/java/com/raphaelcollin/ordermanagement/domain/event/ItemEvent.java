@@ -10,7 +10,6 @@ public class ItemEvent {
     int quantity;
     boolean available;
     double price;
-    double totalPrice;
 
     public static ItemEvent fromEntity(Item item) {
         if (item == null) {
@@ -22,8 +21,7 @@ public class ItemEvent {
                 item.getName(),
                 item.getQuantity(),
                 item.isAvailable(),
-                item.getPrice(),
-                item.getTotalPrice()
+                item.getPrice()
         );
     }
 

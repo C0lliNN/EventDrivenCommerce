@@ -1,0 +1,132 @@
+[
+  {
+    "type": "record",
+    "namespace": "com.raphaelcollin.ordermanagement.kafka",
+    "name": "Customer",
+    "fields": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "email",
+        "type": "string"
+      },
+      {
+        "name": "phone",
+        "type": ["string", "null"]
+      }
+    ]
+  },
+  {
+    "type": "record",
+    "namespace": "com.raphaelcollin.ordermanagement.kafka",
+    "name": "Delivery",
+    "fields": [
+      {
+        "name": "deliveryStatus",
+        "type": "string"
+      },
+      {
+        "name": "lastUpdated",
+        "type": "long"
+      },
+      {
+        "name": "delivered",
+        "type": "boolean"
+      }
+    ]
+  },
+  {
+    "type": "record",
+    "namespace": "com.raphaelcollin.ordermanagement.kafka",
+    "name": "Destination",
+    "fields": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "latitude",
+        "type": "double"
+      },
+      {
+        "name": "longitude",
+        "type": "double"
+      },
+      {
+        "name": "instructions",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "type": "record",
+    "namespace": "com.raphaelcollin.ordermanagement.kafka",
+    "name": "Payment",
+    "fields": [
+      {
+        "name": "paymentMethod",
+        "type": "string"
+      },
+      {
+        "name": "paymentStatus",
+        "type": "string"
+      },
+      {
+        "name": "lastUpdated",
+        "type": "long"
+      },
+      {
+        "name": "paid",
+        "type": "boolean"
+      }
+    ]
+  },
+  {
+    "type": "record",
+    "namespace": "com.raphaelcollin.ordermanagement.kafka",
+    "name": "Order",
+    "fields": [
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "customer",
+        "type": "Customer"
+      },
+      {
+        "name": "delivery",
+        "type": "Delivery"
+      },
+      {
+        "name": "destination",
+        "type": "Destination"
+      },
+      {
+        "name": "payment",
+        "type": "Payment"
+      },
+      {
+        "name": "total",
+        "type": "double"
+      },
+      {
+        "name": "paid",
+        "type": "boolean"
+      },
+      {
+        "name": "delivered",
+        "type": "boolean"
+      },
+      {
+        "name": "items",
+        "type": {
+          "type": "array",
+          "items": "com.raphaelcollin.ordermanagement.kafka.Item"
+        }
+      }
+    ]
+  }
+]

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @Component
@@ -22,7 +23,11 @@ public class KafkaProductProducer implements WriteOnlyProductStream {
 
     @Override
     public void publishEvent(final ProductEvent event) {
-        kafkaTemplate.send(productsTopic, event.getId(), createKafkaObjectFromDomain(event));
+        try {
+            kafkaTemplate.send(productsTopic, event.getId(), createKafkaObjectFromDomain(event)).get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private Product createKafkaObjectFromDomain(ProductEvent event) {

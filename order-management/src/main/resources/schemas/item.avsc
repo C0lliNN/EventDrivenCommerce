@@ -1,0 +1,27 @@
+{
+  "type": "record",
+  "namespace": "com.raphaelcollin.ordermanagement.kafka",
+  "name": "Item",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "name": "quantity",
+      "type": "int"
+    },
+    {
+      "name": "price",
+      "type": "double"
+    },
+    {
+      "name": "available",
+      "type": "boolean"
+    }
+  ]
+}
