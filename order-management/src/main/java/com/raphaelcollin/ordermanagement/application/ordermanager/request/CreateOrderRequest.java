@@ -6,6 +6,7 @@ import com.raphaelcollin.ordermanagement.domain.entity.Destination;
 import com.raphaelcollin.ordermanagement.domain.entity.Order;
 import com.raphaelcollin.ordermanagement.domain.entity.Payment;
 import lombok.Value;
+import lombok.With;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -14,6 +15,8 @@ import java.util.stream.Collectors;
 @Value
 public class CreateOrderRequest {
     String id;
+    @With
+    String correlationId;
     String customerName;
     String customerEmail;
     String customerPhone;

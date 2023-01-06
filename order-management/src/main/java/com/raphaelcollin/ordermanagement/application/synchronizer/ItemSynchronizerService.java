@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 public class ItemSynchronizerService {
     private final WriteOnlyItemRepository itemRepository;
 
-    public void handleNewItem(ItemEvent itemEvent) {
+    public void handleNewItemEvent(ItemEvent itemEvent) {
         itemRepository.upsertItem(itemEvent.toEntity());
     }
 }

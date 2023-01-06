@@ -18,6 +18,7 @@ public class KafkaItemEventConverter {
     public static Item convertDomainToKafkaItem(ItemEvent itemEvent) {
         return new Item(
                 itemEvent.getId(),
+                null,
                 itemEvent.getName(),
                 itemEvent.getQuantity(),
                 itemEvent.getPrice(),

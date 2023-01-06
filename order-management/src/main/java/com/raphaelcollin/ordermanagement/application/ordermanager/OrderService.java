@@ -30,7 +30,7 @@ public class OrderService {
         Set<Item> fullItems = itemRepository.findByIds(itemIds);
         order.setItems(fullItems);
 
-        orderEventProducer.publishEvent(OrderEvent.fromEntity(order));
+        orderEventProducer.publishEvent(OrderEvent.fromEntity(order, request.getCorrelationId()));
     }
 
     public List<OrderResponse> getAllOrders() {

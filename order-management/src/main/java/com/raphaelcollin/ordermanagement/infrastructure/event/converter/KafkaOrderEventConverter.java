@@ -5,17 +5,14 @@ import com.raphaelcollin.ordermanagement.domain.entity.Payment.PaymentStatus;
 import com.raphaelcollin.ordermanagement.domain.event.CustomerEvent;
 import com.raphaelcollin.ordermanagement.domain.event.DeliveryEvent;
 import com.raphaelcollin.ordermanagement.domain.event.DestinationEvent;
-import com.raphaelcollin.ordermanagement.domain.event.ItemEvent;
 import com.raphaelcollin.ordermanagement.domain.event.OrderEvent;
 import com.raphaelcollin.ordermanagement.domain.event.PaymentEvent;
-import com.raphaelcollin.ordermanagement.kafka.Order;
 import com.raphaelcollin.ordermanagement.kafka.Customer;
-import com.raphaelcollin.ordermanagement.kafka.Payment;
 import com.raphaelcollin.ordermanagement.kafka.Delivery;
 import com.raphaelcollin.ordermanagement.kafka.Destination;
-import com.raphaelcollin.ordermanagement.kafka.Item;
+import com.raphaelcollin.ordermanagement.kafka.Order;
+import com.raphaelcollin.ordermanagement.kafka.Payment;
 
-import javax.naming.ldap.SortResponseControl;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.stream.Collectors;
@@ -24,6 +21,7 @@ public class KafkaOrderEventConverter {
     public static OrderEvent convertOrderToDomain(Order order) {
         return new OrderEvent(
                 order.getId(),
+                order.getCorrelationId(),
                 convertCustomerToDomain(order.getCustomer()),
                 convertDestinationToDomain(order.getDestination()),
                 convertDeliveryToDomain(order.getDelivery()),
@@ -72,6 +70,7 @@ public class KafkaOrderEventConverter {
     public static Order convertDomainToKafkaOrder(OrderEvent order) {
         return new Order(
                 order.getId(),
+                order.getCorrelationId(),
                 convertDomainToKafkaCustomer(order.getCustomer()),
                 convertDomainToKafkaDelivery(order.getDelivery()),
                 convertDomainToKafkaDestination(order.getDestination()),

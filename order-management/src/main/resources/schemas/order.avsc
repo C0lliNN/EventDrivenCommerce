@@ -93,6 +93,10 @@
         "type": "string"
       },
       {
+        "name": "correlationId",
+        "type": "string"
+      },
+      {
         "name": "customer",
         "type": "Customer"
       },

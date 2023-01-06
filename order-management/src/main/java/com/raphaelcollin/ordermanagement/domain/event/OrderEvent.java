@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 @Value
 public class OrderEvent {
     String id;
+    String correlationId;
     CustomerEvent customer;
     DestinationEvent destination;
     DeliveryEvent delivery;
@@ -18,9 +19,10 @@ public class OrderEvent {
     boolean delivered;
     Set<ItemEvent> items;
 
-    public static OrderEvent fromEntity(Order order) {
+    public static OrderEvent fromEntity(Order order, String correlationId) {
         return new OrderEvent(
                 order.getId(),
+                correlationId,
                 CustomerEvent.fromEntity(order.getCustomer()),
                 DestinationEvent.fromEntity(order.getDestination()),
                 DeliveryEvent.fromEntity(order.getDelivery()),

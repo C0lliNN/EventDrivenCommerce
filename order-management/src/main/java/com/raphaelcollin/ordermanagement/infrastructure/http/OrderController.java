@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -28,7 +29,8 @@ public class OrderController {
     }
 
     @PostMapping("/orders")
-    public void createOrder(@RequestBody CreateOrderRequest request) {
-        orderService.createOrder(request);
+    public void createOrder(@RequestBody CreateOrderRequest request, HttpServletRequest httpServletRequest) {
+        String correlationId = (String) httpServletRequest.getAttribute(CorrelationIdInterceptor.CORRELATION_ID_NAME);
+        orderService.createOrder(request.withCorrelationId(correlationId));
     }
 }
