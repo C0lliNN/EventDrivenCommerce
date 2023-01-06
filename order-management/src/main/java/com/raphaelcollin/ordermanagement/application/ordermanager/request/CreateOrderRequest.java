@@ -31,7 +31,7 @@ public class CreateOrderRequest {
         return Order.builder()
                 .id(id)
                 .customer(new Customer(customerName, customerEmail, customerPhone))
-                .destination(new Destination(destinationAddress, 0.0, 0.0, null))
+                .destination(new Destination(destinationAddress, destinationLatitude, destinationLongitude, destinationInstructions))
                 .payment(new Payment(paymentMethod, Payment.PaymentStatus.PENDING, LocalDateTime.now()))
                 .delivery(new Delivery(Delivery.DeliveryStatus.IN_INVENTORY, LocalDateTime.now()))
                 .items(items.stream().map(CreateOrderItemRequest::toDomain).collect(Collectors.toUnmodifiableSet()))

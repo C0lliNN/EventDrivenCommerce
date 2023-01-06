@@ -4,8 +4,6 @@ import com.raphaelcollin.ordermanagement.application.ordermanager.OrderEventProd
 import com.raphaelcollin.ordermanagement.domain.event.OrderEvent;
 import com.raphaelcollin.ordermanagement.infrastructure.event.converter.KafkaOrderEventConverter;
 import com.raphaelcollin.ordermanagement.kafka.Order;
-import lombok.AllArgsConstructor;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
