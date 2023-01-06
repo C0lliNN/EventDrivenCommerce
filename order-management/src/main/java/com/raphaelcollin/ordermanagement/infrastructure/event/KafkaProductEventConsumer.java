@@ -1,5 +1,6 @@
 package com.raphaelcollin.ordermanagement.infrastructure.event;
 
+import com.raphaelcollin.inventorymanagement.kafka.Product;
 import com.raphaelcollin.ordermanagement.application.synchronizer.ItemSynchronizerService;
 import com.raphaelcollin.ordermanagement.domain.event.ItemEvent;
 import com.raphaelcollin.ordermanagement.infrastructure.event.converter.KafkaItemEventConverter;
@@ -13,13 +14,22 @@ import org.springframework.stereotype.Component;
 @Component
 @AllArgsConstructor
 @Slf4j
-public class KafkaItemEventConsumer {
+public class KafkaProductEventConsumer {
     private final ItemSynchronizerService service;
 
-    @KafkaListener(topics = "${kafka.items-topic}", groupId = "${kafka.items-consumer-group}", containerFactory = "itemKafkaListenerContainerFactory")
-    public void consume(Item item) {
-        MDC.put("correlation_id", item.getCorrelationId());
-        log.info("New message received for item id: {}", item.getId());
+    @KafkaListener(topics = "${kafka.products-topic}", groupId = "${kafka.products-consumer-group}", containerFactory = "productKafkaListenerContainerFactory")
+    public void consume(Product product) {
+        MDC.put("correlation_id", product.getCorrelationId());
+        log.info("New message received for item id: {}", product.getId());
+
+        Item item = new Item(
+                product.getId(),
+                product.getCorrelationId(),
+                product.getName(),
+                product.getTotalAmountAvailable(),
+                product.getPrice().doubleValue(),
+                product.getIsAvailable()
+        );
 
         ItemEvent itemEvent = KafkaItemEventConverter.convertItemToDomain(item);
         service.handleNewItemEvent(itemEvent);
