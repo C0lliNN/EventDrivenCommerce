@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,13 +25,28 @@ public class OrderService {
     public void createOrder(CreateOrderRequest request) {
         orderValidatorService.validateCreateOrderRequest(request);
 
-        Order order = request.toDomain();
-        Set<String> itemIds = order.getItems().stream().map(Item::getId).collect(Collectors.toUnmodifiableSet());
-
-        Set<Item> fullItems = itemRepository.findByIds(itemIds);
-        order.setItems(fullItems);
+        Order order = createOrderFromRequest(request);
 
         orderEventProducer.publishEvent(OrderEvent.fromEntity(order, request.getCorrelationId()));
+    }
+
+    private Order createOrderFromRequest(CreateOrderRequest request) {
+        Order order = request.toDomain();
+
+        Set<String> itemIds = order.getItems().stream().map(Item::getId).collect(Collectors.toUnmodifiableSet());
+        Set<Item> fullItems = itemRepository.findByIds(itemIds);
+
+        for (Item item : fullItems) {
+            order.getItems().stream()
+                    .filter(i -> i.getId().equals(item.getId()))
+                    .findFirst()
+                    .map(Item::getQuantity)
+                    .ifPresent(item::setQuantity);
+        }
+
+        order.setItems(fullItems);
+
+        return order;
     }
 
     public List<OrderResponse> getAllOrders() {

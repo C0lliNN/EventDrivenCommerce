@@ -1,9 +1,11 @@
 package com.raphaelcollin.inventorymanagement.domain.entity;
 
+import com.raphaelcollin.inventorymanagement.domain.exception.InvalidQuantityException;
 import lombok.Builder;
 import lombok.Data;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 @Data
@@ -49,5 +51,35 @@ public class Product implements Item {
     @Override
     public boolean isAvailable() {
         return getTotalAmountAvailable() > 0;
+    }
+
+    @Override
+    public void applyQuantityChange(int quantity) {
+        if (getInventoryProducts().isEmpty()) {
+            throw new IllegalStateException("The inventory products must not be empty");
+        }
+
+        if (quantity >= 0) {
+            InventoryProduct inventoryProduct = inventoryProducts.stream().findFirst().orElseThrow();
+            inventoryProduct.setQuantity(inventoryProduct.getQuantity() + quantity);
+            return;
+        }
+
+        if (Math.abs(quantity) > getTotalAmountAvailable()) {
+            throw new InvalidQuantityException(String.format("The maximum about available is %d, cannot decrement %d", getTotalAmountAvailable(), Math.abs(quantity)));
+        }
+
+        // TODO: This can probably be simplified a lot
+        Iterator<InventoryProduct> iterator = inventoryProducts.iterator();
+        while (iterator.hasNext() && quantity < 0) {
+            InventoryProduct inventoryProduct = iterator.next();
+            if (Math.abs(quantity) > inventoryProduct.getQuantity()) {
+                quantity += Math.abs(inventoryProduct.getQuantity());
+                inventoryProduct.setQuantity(0);
+            } else {
+                inventoryProduct.setQuantity(inventoryProduct.getQuantity() + quantity);
+                quantity = 0;
+            }
+        }
     }
 }

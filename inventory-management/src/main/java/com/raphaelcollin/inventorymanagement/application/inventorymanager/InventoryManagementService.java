@@ -4,15 +4,19 @@ import com.raphaelcollin.inventorymanagement.application.inventorymanager.reques
 import com.raphaelcollin.inventorymanagement.application.inventorymanager.request.UpsertProductRequest;
 import com.raphaelcollin.inventorymanagement.application.inventorymanager.response.InventoryResponse;
 import com.raphaelcollin.inventorymanagement.application.inventorymanager.response.ProductResponse;
+import com.raphaelcollin.inventorymanagement.domain.entity.Product;
 import com.raphaelcollin.inventorymanagement.domain.event.ProductEvent;
+import com.raphaelcollin.inventorymanagement.domain.event.StockChangeEvent;
 import com.raphaelcollin.inventorymanagement.domain.exception.EntityNotFoundException;
 import com.raphaelcollin.inventorymanagement.domain.exception.InvalidRequestException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -81,5 +85,15 @@ public class InventoryManagementService {
         if (request.getName() == null || request.getName().isBlank()) {
             throw new InvalidRequestException("The 'name' is required");
         }
+    }
+
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+    public void processStockChange(StockChangeEvent stockChangeEvent) {
+        Product product = productRepository.findById(stockChangeEvent.getProductId())
+                .orElseThrow(() -> new EntityNotFoundException("Product could not be found"));
+
+        product.applyQuantityChange(stockChangeEvent.getQuantityToBeChanged());
+
+        productStream.publishEvent(ProductEvent.fromEntity(product, UUID.randomUUID().toString()));
     }
 }

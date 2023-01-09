@@ -1,5 +1,6 @@
 package com.raphaelcollin.inventorymanagement.domain.entity;
 
+import com.raphaelcollin.inventorymanagement.domain.exception.InvalidQuantityException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ProductTest {
 
@@ -110,7 +112,7 @@ class ProductTest {
 
     @Nested
     @DisplayName("method: addInventoryProduct")
-    class AddInventoryProductTEst {
+    class AddInventoryProductTest {
 
         @Test
         @DisplayName("when inventoryProducts is null, a single item should be present at the inventoryProducts set")
@@ -134,6 +136,57 @@ class ProductTest {
             product.addInventoryProduct(inventoryProduct2);
 
             assertThat(product.getInventoryProducts()).hasSize(2).containsExactlyInAnyOrder(inventoryProduct1, inventoryProduct2);
+        }
+    }
+
+    @Nested
+    @DisplayName("method: applyQuantityChange(int)")
+    class ApplyQuantityChangeMethodTest {
+
+        @Test
+        @DisplayName("when quantity is positive or zero, then it should increment to some inventory quantity")
+        void whenQuantityIsPositiveOrZero_shouldIncrementToSomeInventoryQuantity() {
+            InventoryProduct inventoryProduct1 = new InventoryProduct("", "", 4);
+            InventoryProduct inventoryProduct2 = new InventoryProduct("", "", 5);
+
+            Product product = Product.builder()
+                    .inventoryProducts(Set.of(inventoryProduct1, inventoryProduct2))
+                    .build();
+
+            product.applyQuantityChange(8);
+
+            assertThat(product.getTotalAmountAvailable()).isEqualTo(17);
+        }
+
+        @Test
+        @DisplayName("when quantity is negative and it's greater than the total amount, then it should throw an exception")
+        void whenQuantityIsNegativeAndItsGreaterThanTheTotalAmount_shouldThrowAnException() {
+            InventoryProduct inventoryProduct1 = new InventoryProduct("", "", 4);
+            InventoryProduct inventoryProduct2 = new InventoryProduct("", "", 5);
+
+            Product product = Product.builder()
+                    .inventoryProducts(Set.of(inventoryProduct1, inventoryProduct2))
+                    .build();
+
+            assertThatThrownBy(() -> product.applyQuantityChange(-10))
+                    .isInstanceOf(InvalidQuantityException.class);
+        }
+
+        @Test
+        @DisplayName("when quantity is negative and it's lower or equal to the total amount, then it should apply correctly")
+        void whenQuantityIsNegativeAndItsLowerOrEqualToTheTotalAmount_shouldApplyCorrectly() {
+            InventoryProduct inventoryProduct1 = new InventoryProduct("", "", 4);
+            InventoryProduct inventoryProduct2 = new InventoryProduct("", "", 5);
+
+            Product product = Product.builder()
+                    .inventoryProducts(Set.of(inventoryProduct1, inventoryProduct2))
+                    .build();
+
+            product.applyQuantityChange(-6);
+            assertThat(product.getTotalAmountAvailable()).isEqualTo(3);
+
+            product.applyQuantityChange(-3);
+            assertThat(product.getTotalAmountAvailable()).isEqualTo(0);
         }
     }
 }
