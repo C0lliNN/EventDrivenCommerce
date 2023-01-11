@@ -57,7 +57,7 @@ services:
     environment:
       - SCHEMA_REGISTRY_LISTENERS=http://0.0.0.0:8081
       - SCHEMA_REGISTRY_KAFKA_BROKERS=PLAINTEXT://kafka1:9092,PLAINTEXT://kafka2:9093
-      -
+
   postgres:
     image: postgres
     environment:
@@ -66,13 +66,13 @@ services:
       - POSTGRES_PASSWORD=postgres
     ports:
       - "5432:5432"
-      -
+
   mongo:
     image: mongo
     restart: always
     ports:
       - "27017:27017"
-      -
+
   redis:
     image: redis
     ports:
@@ -85,3 +85,56 @@ services:
     environment:
       MYSQL_DATABASE: "shipping_management"
       MYSQL_ROOT_PASSWORD: "root"
+
+  kafka-connector-mysql:
+    image: confluentinc/cp-kafka-connect:latest
+    ports:
+      - "8083:8083"
+    depends_on:
+      - kafka1
+      - kafka2
+      - zookeeper
+      - mysql
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: "PLAINTEXT://kafka1:9092,PLAINTEXT://kafka2:9093"
+      CONNECT_REST_PORT: 8083
+      CONNECT_GROUP_ID: "shipping-management"
+      CONNECT_CONFIG_STORAGE_TOPIC: "__shipping-management-config"
+      CONNECT_OFFSET_STORAGE_TOPIC: "__shipping-management-offsets"
+      CONNECT_STATUS_STORAGE_TOPIC: "__shipping-management-status"
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_KEY_CONVERTER: "io.confluent.connect.avro.AvroConverter"
+      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+      CONNECT_VALUE_CONVERTER: "io.confluent.connect.avro.AvroConverter"
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+      CONNECT_INTERNAL_KEY_CONVERTER: 'org.apache.kafka.connect.json.JsonConverter'
+      CONNECT_INTERNAL_VALUE_CONVERTER: 'org.apache.kafka.connect.json.JsonConverter'
+      CONNECT_INTERNAL_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+      CONNECT_OFFSET_FLUSH_TIMEOUT_MS: "60000"
+      CONNECT_OFFSET_FLUSH_INTERVAL_MS: "10000"
+      CONNECT_REST_ADVERTISED_HOST_NAME: "localhost"
+    command:
+      - bash
+      - -c
+      - |
+        echo "Installing Kafka Confluent Connector"
+        confluent-hub install --no-prompt confluentinc/kafka-connect-jdbc:10.0.0
+        echo "Installing MySQL JDBC Driver"
+        cd /usr/share/confluent-hub-components/confluentinc-kafka-connect-jdbc/lib
+        curl https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.25/mysql-connector-java-8.0.25.jar -o mysql-connector-java-8.0.25.jar
+        #
+        echo "Launching Kafka Connect worker"
+        /etc/confluent/docker/run &
+        #
+        echo "Waiting for Kafka Connect to start listening on 0.0.0.0:8083 ⏳"
+        while : ; do
+          curl_status=$$(curl -s -o /dev/null -w %{http_code} http://0.0.0.0:8083/connectors)
+          echo -e $$(date) " Kafka Connect listener HTTP state: " $$curl_status " (waiting for 200)"
+          if [ $$curl_status -eq 200 ] ; then
+          break
+          fi
+          sleep 5
+        done
+        sleep infinity

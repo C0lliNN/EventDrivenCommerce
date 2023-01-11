@@ -1,0 +1,21 @@
+{
+  "name": "mysql-jdbc-shippings",
+  "config": {
+    "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
+    "connection.url": "jdbc:mysql://mysql:3306/shipping_management",
+    "connection.user" : "root",
+    "connection.password": "root",
+    "tasks.max": "1",
+    "mode": "timestamp+incrementing",
+    "table.whitelist": "shippings",
+    "timestamp.column.name": "last_updated",
+    "incrementing.column.name": "id",
+    "topic.prefix": "shipping-management-",
+    "poll.interval.ms": "1000",
+    "transforms":"copyFieldToKey,extractKeyFromStruct",
+    "transforms.copyFieldToKey.type":"org.apache.kafka.connect.transforms.ValueToKey",
+    "transforms.copyFieldToKey.fields":"id",
+    "transforms.extractKeyFromStruct.type":"org.apache.kafka.connect.transforms.ExtractField$Key",
+    "transforms.extractKeyFromStruct.field":"id"
+  }
+}
