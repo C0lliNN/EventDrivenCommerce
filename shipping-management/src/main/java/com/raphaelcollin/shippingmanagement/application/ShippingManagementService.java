@@ -7,6 +7,7 @@ import com.raphaelcollin.shippingmanagement.domain.entity.Shipping;
 import com.raphaelcollin.shippingmanagement.domain.entity.ShippingStatus;
 import com.raphaelcollin.shippingmanagement.domain.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @AllArgsConstructor
 public class ShippingManagementService {
     private final ShippingRepository shippingRepository;
@@ -25,8 +27,14 @@ public class ShippingManagementService {
     }
 
     public void createShipping(CreateShippingRequest request) {
+        String externalUniqueIdentifier = request.getUpstreamExternalIdentifier();
+        if (shippingRepository.findByUpstreamExternalIdentifier(externalUniqueIdentifier).isPresent()) {
+            log.info("Shipping {} already processed, skipping it", externalUniqueIdentifier);
+            return;
+        }
+
         Shipping shipping = Shipping.builder()
-                .upstreamExternalIdentifier(request.getUpstreamExternalIdentifier())
+                .upstreamExternalIdentifier(externalUniqueIdentifier)
                 .status(ShippingStatus.IN_INVENTORY)
                 .lastUpdated(LocalDateTime.now())
                 .build();
