@@ -103,6 +103,7 @@
                         <include>**/*.avro</include>
                     </includes>
                     <imports>
+                        <import>${project.basedir}/src/main/resources/schemas/shipping.avsc</import>
                         <import>${project.basedir}/src/main/resources/schemas/product.avsc</import>
                         <import>${project.basedir}/src/main/resources/schemas/item.avsc</import>
                         <import>${project.basedir}/src/main/resources/schemas/order.avsc</import>
