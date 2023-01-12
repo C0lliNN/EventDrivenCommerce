@@ -7,6 +7,7 @@ import java.util.Optional;
 
 public interface ShippingRepository {
     void save(Shipping shipping);
+    void update(Shipping shipping);
     List<Shipping> findAll();
     Optional<Shipping> findById(int id);
     Optional<Shipping> findByUpstreamExternalIdentifier(String upstreamExternalIdentifier);

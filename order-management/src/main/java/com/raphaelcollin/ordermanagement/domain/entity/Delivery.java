@@ -1,10 +1,14 @@
 package com.raphaelcollin.ordermanagement.domain.entity;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
-@Value
+@Data
+@AllArgsConstructor
 public class Delivery {
     DeliveryStatus deliveryStatus;
     LocalDateTime lastUpdated;
@@ -18,5 +22,10 @@ public class Delivery {
 
     public boolean isDelivered() {
         return deliveryStatus == DeliveryStatus.DELIVERED;
+    }
+
+    public void updateStatus(DeliveryStatus newStatus) {
+        this.deliveryStatus = newStatus;
+        this.lastUpdated = LocalDateTime.now(Clock.systemUTC());
     }
 }

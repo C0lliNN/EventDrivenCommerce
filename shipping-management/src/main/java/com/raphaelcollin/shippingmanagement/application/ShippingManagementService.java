@@ -9,7 +9,10 @@ import com.raphaelcollin.shippingmanagement.domain.exception.EntityNotFoundExcep
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Clock;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +29,7 @@ public class ShippingManagementService {
                 .collect(Collectors.toUnmodifiableList());
     }
 
+    @Transactional
     public void createShipping(CreateShippingRequest request) {
         String externalUniqueIdentifier = request.getUpstreamExternalIdentifier();
         if (shippingRepository.findByUpstreamExternalIdentifier(externalUniqueIdentifier).isPresent()) {
@@ -42,13 +46,15 @@ public class ShippingManagementService {
         shippingRepository.save(shipping);
     }
 
+    @Transactional
     public void updateShipping(int shippingId, UpdateShippingRequest request) {
         Shipping shipping = shippingRepository.findById(shippingId)
                 .orElseThrow(() -> new EntityNotFoundException("Shipping not found"));
 
         shipping.setStatus(request.getStatus());
         shipping.setUpstreamExternalIdentifier(request.getUpstreamExternalIdentifier());
+        shipping.setLastUpdated(LocalDateTime.now(Clock.systemUTC()));
 
-        shippingRepository.save(shipping);
+        shippingRepository.update(shipping);
     }
 }

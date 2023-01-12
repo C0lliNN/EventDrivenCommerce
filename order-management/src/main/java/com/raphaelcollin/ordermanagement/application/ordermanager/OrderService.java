@@ -1,16 +1,17 @@
 package com.raphaelcollin.ordermanagement.application.ordermanager;
 
 import com.raphaelcollin.ordermanagement.application.ordermanager.request.CreateOrderRequest;
+import com.raphaelcollin.ordermanagement.application.ordermanager.request.UpdateDeliveryRequest;
 import com.raphaelcollin.ordermanagement.application.ordermanager.response.OrderResponse;
 import com.raphaelcollin.ordermanagement.domain.entity.Item;
 import com.raphaelcollin.ordermanagement.domain.entity.Order;
 import com.raphaelcollin.ordermanagement.domain.event.OrderEvent;
 import com.raphaelcollin.ordermanagement.domain.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -59,5 +60,14 @@ public class OrderService {
         return orderRepository.findById(orderId)
                 .map(OrderResponse::fromDomain)
                 .orElseThrow(() -> new EntityNotFoundException("order not found"));
+    }
+
+    public void handleDeliveryUpdate(UpdateDeliveryRequest request) {
+        Order order = orderRepository.findById(request.getOrderId())
+                .orElseThrow(() -> new EntityNotFoundException("order not found"));
+
+        order.updateDeliveryStatus(request.getDeliveryStatus());
+
+        orderEventProducer.publishEvent(OrderEvent.fromEntity(order, MDC.get("correlation_id")));
     }
 }

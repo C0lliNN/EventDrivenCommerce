@@ -18,12 +18,22 @@ public class JDBCShippingRepository implements ShippingRepository {
 
     @Override
     public void save(final Shipping shipping) {
-        template.update("DELETE FROM shippings WHERE id = ?", shipping.getId());
         template.update(
                 "INSERT INTO shippings VALUES (null, ?, ?, ?)",
                 shipping.getUpstreamExternalIdentifier(),
                 shipping.getStatus().name(),
                 shipping.getLastUpdated()
+        );
+    }
+
+    @Override
+    public void update(final Shipping shipping) {
+        template.update(
+                "UPDATE shippings SET upstream_external_identifier = ?, status = ?, last_updated = ? WHERE id = ?",
+                shipping.getUpstreamExternalIdentifier(),
+                shipping.getStatus().name(),
+                shipping.getLastUpdated(),
+                shipping.getId()
         );
     }
 

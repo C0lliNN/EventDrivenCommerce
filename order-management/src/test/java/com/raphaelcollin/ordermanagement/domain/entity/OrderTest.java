@@ -4,10 +4,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 
 class OrderTest {
 
@@ -131,4 +133,21 @@ class OrderTest {
         }
     }
 
+    @Nested
+    @DisplayName("method: updateDeliveryStatus(DeliveryStatus)")
+    class UpdateDeliveryStatusMethod {
+
+        @Test
+        @DisplayName("when called, it should update the status and lastUpdated")
+        void whenCalled_shouldUpdateTheStatusAndLastUpdated() {
+            Order order = Order.builder()
+                    .delivery(new Delivery(Delivery.DeliveryStatus.IN_INVENTORY, null))
+                    .build();
+
+            order.updateDeliveryStatus(Delivery.DeliveryStatus.IN_FLIGHT);
+
+            assertThat(order.getDelivery().getDeliveryStatus()).isEqualTo(Delivery.DeliveryStatus.IN_FLIGHT);
+            assertThat(order.getDelivery().getLastUpdated()).isCloseToUtcNow(within(5, ChronoUnit.SECONDS));
+        }
+    }
 }

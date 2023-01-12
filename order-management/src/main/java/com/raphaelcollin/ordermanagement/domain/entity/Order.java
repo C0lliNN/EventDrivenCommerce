@@ -43,5 +43,7 @@ public class Order {
         return Collections.unmodifiableSet(items);
     }
 
-    
+    public void updateDeliveryStatus(Delivery.DeliveryStatus status) {
+        delivery.updateStatus(status);
+    }
 }
