@@ -35,4 +35,5 @@
 * [ ] Create Framework for Common Code
 * [ ] Review InventoryProduct Modeling and applyQuantityChange method
 * [ ] Validate Inventory when a new Product is created
+* [ ] Send Destination Information to Shipping
 * [ ] Create more unit tests, integration tests and systems test
